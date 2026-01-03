@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.core.mail import send_mail
+#from django.core.mail import send_mail
 from django.conf import settings
 from django.db.models import Q
 from .models import Profile, Student, ProgressSheet
@@ -88,11 +88,11 @@ def login_view(request):
 
 @login_required
 def dashboard_view(request):
-    # Get dashboard statistics
+  
     total_students = Student.objects.count()
     top_performer = None
     
-    # Find top performer based on average marks
+  
     students_with_avg = []
     for student in Student.objects.all():
         avg_marks = 0
@@ -115,48 +115,46 @@ def dashboard_view(request):
 
 @login_required
 def student_list_view(request):
-    # Get filter and sort parameters
+ 
     exam_type = request.GET.get('exam_type', '')
     search_query = request.GET.get('search', '')
     class_filter = request.GET.get('class', '')
     
-    # Get all students
+    
     students = Student.objects.all()
     
-    # Apply class filter
+   
     if class_filter:
         students = students.filter(class_batch=class_filter)
     
-    # Apply search filter
     if search_query:
         students = students.filter(
             Q(full_name__icontains=search_query) | 
             Q(roll_number__icontains=search_query)
         )
     
-    # If exam type is selected, only show students who have progress sheets for that exam type
+   
     if exam_type:
-        # Get all progress sheets for the selected exam type
+        
         exam_sheets = ProgressSheet.objects.filter(exam_type=exam_type)
         
-        # Get the student IDs that have progress sheets for the selected exam type
         student_ids = exam_sheets.values_list('student_id', flat=True).distinct()
         
-        # Filter students who have progress sheets for the selected exam type
+      
         students = students.filter(id__in=student_ids)
         
-        # Create a dictionary to store student and their average marks for the exam type
+  
         student_averages = {}
         for sheet in exam_sheets:
             student = sheet.student
             if student not in student_averages:
-                # Get all sheets for this student for this exam type
+                
                 student_exam_sheets = exam_sheets.filter(student=student)
                 total_marks = sum([s.marks for s in student_exam_sheets])
                 avg_marks = total_marks / len(student_exam_sheets) if len(student_exam_sheets) > 0 else 0
                 student_averages[student] = avg_marks
         
-        # Sort students by average marks in descending order
+        
         students = sorted(students, key=lambda s: student_averages.get(s, 0), reverse=True)
     
     # Get all available classes for the filter dropdown
@@ -220,17 +218,17 @@ def delete_student_view(request, student_id):
 def student_detail_view(request, student_id):
     student = get_object_or_404(Student, id=student_id)
     
-    # Get all progress sheets for this student
+     
     progress_sheets = student.progress_sheets.all()
     
-    # Group by exam type
+    
     exam_data = {}
     for sheet in progress_sheets:
         if sheet.exam_type not in exam_data:
             exam_data[sheet.exam_type] = []
         exam_data[sheet.exam_type].append(sheet)
     
-    # Calculate total marks and average score
+   
     total_marks = sum(float(sheet.marks) for sheet in progress_sheets)
     average_score = 0
     if progress_sheets.count() > 0:
