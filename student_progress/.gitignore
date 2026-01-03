@@ -1,0 +1,63 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual Environment
+env/
+.venv/
+env.bak/
+venv.bak/
+
+
+# Django
+db.sqlite3
+*.sqlite3
+media/
+staticfiles/
+static/
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Security
+secret_key.txt
+key.txt
+config.json
+
+# Backup files
+*.bak
+*.backup
+
+# Coverage
+.coverage
+htmlcov/
+.coverage.*
+
+# Pytest
+pytest_cache/
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints

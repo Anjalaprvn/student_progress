@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Student</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Inter', sans-serif;
+        }
+
+        body { 
+            background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 50%, #f8fafc 100%);
+            color: #334155;
+            min-height: 100vh;
+            padding: 30px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(220, 38, 38, 0.1), 0 5px 15px rgba(0,0,0,0.07);
+            padding: 40px;
+            border: 1px solid #fee2e2;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #fecaca;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #ef4444, #dc2626);
+            border-radius: 3px;
+        }
+
+        .header h1 {
+            color: #1e293b;
+            font-size: 32px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header h1 i {
+            color: #ef4444;
+            font-size: 28px;
+        }
+
+        .back-btn {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.25);
+            border: none;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.35);
+        }
+
+        .confirm-text {
+            margin: 30px 0;
+            font-size: 22px;
+            color: #dc2626;
+            font-weight: 600;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #fef2f2, #fee);
+            border-radius: 15px;
+            border-left: 5px solid #ef4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .confirm-text i {
+            font-size: 26px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .student-info {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 100%;
+            background: linear-gradient(to bottom, #ef4444, #dc2626);
+        }
+
+        .student-info p {
+            margin-bottom: 18px;
+            padding-bottom: 18px;
+            border-bottom: 1px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 16px;
+        }
+
+        .student-info p:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .student-info strong {
+            color: #475569;
+            font-weight: 600;
+            min-width: 150px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .student-info strong i {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .student-info span {
+            color: #1e293b;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .delete-btn {
+            padding: 18px 45px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(239, 68, 68, 0.4);
+        }
+
+        .delete-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .cancel-btn {
+            padding: 18px 45px;
+            background: linear-gradient(135deg, #64748b, #475569);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 8px 25px rgba(100, 116, 139, 0.2);
+        }
+
+        .cancel-btn:hover {
+            background: linear-gradient(135deg, #475569, #334155);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(100, 116, 139, 0.3);
+            color: white;
+        }
+
+        .message {
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            animation: slideIn 0.5s ease-out;
+            border-left: 5px solid;
+            font-size: 16px;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .success {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+            border-left-color: #10b981;
+        }
+        
+        .error {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            color: #7f1d1d;
+            border-left-color: #ef4444;
+        }
+
+        .message i {
+            font-size: 22px;
+        }
+
+        .warning-note {
+            text-align: center;
+            margin-top: 25px;
+            color: #dc2626;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 15px;
+            background: #fef2f2;
+            border-radius: 10px;
+            border: 1px dashed #fca5a5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 30px 25px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .header::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .delete-btn, .cancel-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .student-info p {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .student-info strong {
+                min-width: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1><i class="fas fa-user-slash"></i> Delete Student</h1>
+        <a href="{% url 'student_list' %}" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+
+    <!-- Display messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message {% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="confirm-text">
+        <i class="fas fa-exclamation-triangle"></i>
+        Are you sure you want to delete this student?
+    </div>
+
+    <div class="student-info">
+        <p>
+            <strong><i class="fas fa-user"></i> Full Name:</strong>
+            <span>{{ student.full_name }}</span>
+        </p>
+        <p>
+            <strong><i class="fas fa-envelope"></i> Email:</strong>
+            <span>{{ student.email }}</span>
+        </p>
+        <p>
+            <strong><i class="fas fa-hashtag"></i> Roll Number:</strong>
+            <span>{{ student.roll_number }}</span>
+        </p>
+        <p>
+            <strong><i class="fas fa-users"></i> Class/Batch:</strong>
+            <span>{{ student.class_batch }}</span>
+        </p>
+        <p>
+            <strong><i class="fas fa-calendar-alt"></i> Date of Birth:</strong>
+            <span>{{ student.date_of_birth }}</span>
+        </p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="delete-btn">
+                <i class="fas fa-trash-alt"></i> Yes, Delete
+            </button>
+            <a href="{% url 'student_list' %}" class="cancel-btn">
+                <i class="fas fa-times"></i> Cancel
+            </a>
+        </div>
+    </form>
+    
+    <div class="warning-note">
+        <i class="fas fa-shield-alt"></i>
+        This action cannot be undone. All associated data will be permanently deleted.
+    </div>
+</div>
+
+<script>
+    // Add a confirmation dialog for extra safety
+    document.addEventListener('DOMContentLoaded', function() {
+        const deleteForm = document.querySelector('form');
+        const deleteButton = document.querySelector('.delete-btn');
+        
+        deleteForm.addEventListener('submit', function(e) {
+            // Add a more specific confirmation
+            const studentName = "{{ student.full_name|escapejs }}";
+            const confirmed = confirm(`Are you absolutely sure you want to delete "${studentName}"?\n\nThis action is permanent and cannot be undone.`);
+            
+            if (!confirmed) {
+                e.preventDefault();
+                // Add a visual feedback for cancellation
+                deleteButton.style.transform = 'translateX(10px)';
+                setTimeout(() => {
+                    deleteButton.style.transform = '';
+                }, 300);
+            } else {
+                // Change button text to indicate processing
+                deleteButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+                deleteButton.disabled = true;
+            }
+        });
+        
+        // Add hover animations
+        const buttons = document.querySelectorAll('.back-btn, .delete-btn, .cancel-btn');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+        
+        // Add fade-in animation to elements
+        const elements = document.querySelectorAll('.confirm-text, .student-info, .form-actions');
+        elements.forEach((element, index) => {
+            element.style.animationDelay = `${index * 0.1}s`;
+            element.style.animation = 'fadeIn 0.6s ease-out forwards';
+        });
+    });
+</script>
+
+</body>
+</html>

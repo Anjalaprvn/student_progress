@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary-color: #7209b7;
+            --accent-color: #2ec4b6;
+            --success-color: #06d6a0;
+            --warning-color: #ffd166;
+            --danger-color: #ef476f;
+            --info-color: #3b82f6;
+            --card-shadow: 0 25px 80px rgba(0, 0, 0, 0.08);
+            --border-radius: 24px;
+            --gradient: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            --gradient-success: linear-gradient(135deg, var(--success-color), #0ac99c);
+            --gradient-danger: linear-gradient(135deg, var(--danger-color), #ff5c8d);
+            --gradient-warning: linear-gradient(135deg, var(--warning-color), #ffb347);
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        body { 
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f4ff 0%, #f8fafc 100%);
+            color: #1f2937;
+            min-height: 100vh;
+            padding: 30px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 10% 20%, rgba(67, 97, 238, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 90% 80%, rgba(114, 9, 183, 0.03) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            border: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 35px 40px;
+            background: linear-gradient(to right, white 70%, #f8fafc 100%);
+            border-bottom: 1px solid #f1f5f9;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 150px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.3);
+        }
+
+        .header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1f2937;
+            line-height: 1.2;
+        }
+
+        .header-subtitle {
+            font-size: 16px;
+            color: #64748b;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 28px;
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.6s;
+        }
+
+        .header-btn:hover::before {
+            left: 100%;
+        }
+
+        .header-btn.dashboard {
+            background: linear-gradient(135deg, var(--info-color), #2563eb);
+        }
+
+        .header-btn.logout {
+            background: var(--gradient-danger);
+        }
+
+        .header-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Message Styles */
+        .message {
+            padding: 20px 25px;
+            margin: 0 40px 25px;
+            border-radius: 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideIn 0.5s ease-out;
+            border-left: 5px solid;
+        }
+        
+        .success {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            color: #065f46;
+            border-left-color: var(--success-color);
+        }
+        
+        .error {
+            background: linear-gradient(135deg, #fef2f2, #fee2e2);
+            color: #7f1d1d;
+            border-left-color: var(--danger-color);
+        }
+
+        .message i {
+            font-size: 22px;
+        }
+
+        /* Controls Section */
+        .controls-section {
+            padding: 35px 40px 25px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .controls-wrapper {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .control-group {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .control-label {
+            display: block;
+            margin-bottom: 10px;
+            color: #475569;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-label i {
+            color: var(--primary-color);
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 25px 18px 55px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            color: #1f2937;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus + .search-icon {
+            color: var(--primary-color);
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 18px 25px;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            background: white;
+            color: #1f2937;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 25px center;
+            background-size: 16px;
+        }
+
+        .filter-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.15);
+            outline: none;
+        }
+
+        .add-student-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 35px;
+            background: var(--gradient-success);
+            color: white;
+            text-decoration: none;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(6, 214, 160, 0.4);
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .add-student-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.6s;
+        }
+
+        .add-student-btn:hover::before {
+            left: 100%;
+        }
+
+        .add-student-btn:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(6, 214, 160, 0.6);
+            color: white;
+        }
+
+        /* Filter Info */
+        .filter-info {
+            padding: 20px 40px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            font-weight: 600;
+            color: #475569;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-tag i {
+            color: var(--primary-color);
+        }
+
+        .clear-filter {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: white;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            color: #64748b;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .clear-filter:hover {
+            border-color: var(--danger-color);
+            color: var(--danger-color);
+            background: #fef2f2;
+        }
+
+        /* Students Table */
+        .students-section {
+            padding: 40px;
+        }
+
+        .students-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .students-count {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .count-badge {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 22px;
+            font-weight: 700;
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+        }
+
+        .students-count h3 {
+            font-size: 22px;
+            color: #1f2937;
+        }
+
+        .students-count p {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .students-table-container {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+            background: white;
+        }
+
+        .students-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            min-width: 1000px;
+        }
+
+        .students-table thead {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        }
+
+        .students-table th {
+            padding: 22px 25px;
+            text-align: left;
+            color: #475569;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border-bottom: 2px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .students-table th:first-child {
+            border-top-left-radius: 16px;
+        }
+
+        .students-table th:last-child {
+            border-top-right-radius: 16px;
+        }
+
+        .students-table td {
+            padding: 25px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .students-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .students-table tbody tr:hover {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            transform: translateX(5px);
+        }
+
+        .students-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Student Info Cells */
+        .student-name-cell {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .student-avatar {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .student-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .student-name {
+            font-weight: 700;
+            color: #1f2937;
+            font-size: 16px;
+        }
+
+        .student-email {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .score-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 15px;
+            background: rgba(6, 214, 160, 0.1);
+            color: #06d6a0;
+        }
+
+        .score-badge.average {
+            background: rgba(255, 209, 102, 0.1);
+            color: #f59e0b;
+        }
+
+        .score-badge.poor {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn.view {
+            background: linear-gradient(135deg, var(--info-color), #2563eb);
+        }
+
+        .action-btn.edit {
+            background: var(--gradient-warning);
+        }
+
+        .action-btn.delete {
+            background: var(--gradient-danger);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 40px;
+            color: #94a3b8;
+        }
+
+        .empty-state i {
+            font-size: 80px;
+            margin-bottom: 25px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            color: #64748b;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .empty-state p {
+            color: #94a3b8;
+            max-width: 500px;
+            margin: 0 auto 30px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Pagination */
+        .pagination-section {
+            padding: 30px 40px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .pagination-info {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .pagination-info strong {
+            color: #1f2937;
+        }
+
+        .pagination {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .pagination-link {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            background: white;
+            border: 2px solid #e2e8f0;
+            color: #475569;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .pagination-link:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .pagination-link.active {
+            background: var(--gradient);
+            border-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+        }
+
+        .pagination-link.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f8fafc;
+        }
+
+        .pagination-link.disabled:hover {
+            border-color: #e2e8f0;
+            color: #475569;
+            transform: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .controls-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .control-group {
+                min-width: 100%;
+            }
+            
+            .add-student-btn {
+                align-self: flex-start;
+            }
+        }
+
+        @media (max-width: 900px) {
+            body {
+                padding: 20px 15px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 25px;
+                padding: 30px 25px;
+                text-align: center;
+            }
+            
+            .header-left {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .header-actions {
+                width: 100%;
+                flex-direction: column;
+            }
+            
+            .header-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .controls-section, .filter-info, .students-section, .pagination-section {
+                padding: 25px;
+            }
+            
+            .message {
+                margin: 0 25px 20px;
+            }
+            
+            .students-table th, .students-table td {
+                padding: 18px 20px;
+            }
+            
+            .pagination-section {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .students-table td {
+                padding: 15px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .action-btn {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .filter-tag, .clear-filter {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="dashboard-card">
+        <!-- Display messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message {% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                    <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>
+                    <div>{{ message }}</div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="header">
+            <div class="header-left">
+                <div class="header-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div>
+                    <h1>Student Management</h1>
+                    <div class="header-subtitle">Manage and track all students in one place</div>
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <a href="{% url 'dashboard' %}" class="header-btn dashboard">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="{% url 'logout' %}" class="header-btn logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+        
+        <div class="controls-section">
+            <div class="controls-wrapper">
+                <div class="control-group">
+                    <div class="control-label"><i class="fas fa-search"></i> Search Students</div>
+                    <form method="GET" class="search-box">
+                        <input type="hidden" name="exam_type" value="{{ selected_exam }}">
+                        <input type="hidden" name="class" value="{{ selected_class }}">
+                        <input type="text" name="search" class="search-input" placeholder="Search by name, email, or roll number..." value="{{ search_query }}">
+                        <div class="search-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <button type="submit" style="display: none;">Search</button>
+                    </form>
+                </div>
+                
+                <div class="control-group">
+                    <div class="control-label"><i class="fas fa-filter"></i> Filter by Exam Type</div>
+                    <form method="GET">
+                        <input type="hidden" name="class" value="{{ selected_class }}">
+                        <input type="hidden" name="search" value="{{ search_query }}">
+                        <select name="exam_type" class="filter-select" onchange="this.form.submit()">
+                            <option value="">All Exam Types</option>
+                            {% for exam_key, exam_name in exam_types %}
+                                <option value="{{ exam_key }}" {% if selected_exam == exam_key %}selected{% endif %}>{{ exam_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+                
+                <div class="control-group">
+                    <div class="control-label"><i class="fas fa-school"></i> Filter by Class</div>
+                    <form method="GET">
+                        <input type="hidden" name="exam_type" value="{{ selected_exam }}">
+                        <input type="hidden" name="search" value="{{ search_query }}">
+                        <select name="class" class="filter-select" onchange="this.form.submit()">
+                            <option value="">All Classes</option>
+                            {% for class_batch in all_classes %}
+                                <option value="{{ class_batch }}" {% if selected_class == class_batch %}selected{% endif %}>{{ class_batch }}</option>
+                            {% endfor %}
+                        </select>
+                    </form>
+                </div>
+                
+                <a href="{% url 'add_student' %}" class="add-student-btn">
+                    <i class="fas fa-user-plus"></i> Add New Student
+                </a>
+            </div>
+        </div>
+        
+        <!-- Display selected filter info -->
+        {% if selected_exam or search_query %}
+        <div class="filter-info">
+            <div class="filter-tag">
+                <i class="fas fa-filter"></i>
+                <span>
+                    {% if selected_exam or selected_class or search_query %}
+                    {% if selected_exam %}Exam: {{ selected_exam|title }}{% endif %}
+                    {% if selected_class %}{% if selected_exam %} • {% endif %}Class: {{ selected_class }}{% endif %}
+                    {% if search_query %}{% if selected_exam or selected_class %} • {% endif %}Search: "{{ search_query }}"{% endif %}
+                    {% endif %}
+                </span>
+            </div>
+            
+            <a href="{% url 'student_list' %}" class="clear-filter">
+                <i class="fas fa-times"></i> Clear All Filters
+            </a>
+        </div>
+        {% endif %}
+        
+        <div class="students-section">
+            <div class="students-header">
+                <div class="students-count">
+                    <div class="count-badge">
+                        {{ students.paginator.count|default:"0" }}
+                    </div>
+                    <div>
+                        <h3>Student Records</h3>
+                        <p>Total students in the system</p>
+                    </div>
+                </div>
+            </div>
+            
+            {% if students %}
+            <div class="students-table-container">
+                <table class="students-table">
+                    <thead>
+                        <tr>
+                            <th>Student Information</th>
+                            <th>Roll Number</th>
+                            <th>Class / Batch</th>
+                            <th>Date of Birth</th>
+                            {% if selected_exam %}
+                            <th>{{ selected_exam|title }} Exam Scores</th>
+                            {% endif %}
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>
+                                <div class="student-name-cell">
+                                    <div class="student-avatar">
+                                        {{ student.full_name|first|upper }}
+                                    </div>
+                                    <div class="student-info">
+                                        <div class="student-name">{{ student.full_name }}</div>
+                                        <div class="student-email">{{ student.email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><strong>{{ student.roll_number }}</strong></td>
+                            <td>{{ student.class_batch }}</td>
+                            <td>{{ student.date_of_birth }}</td>
+                            {% if selected_exam %}
+                            <td>
+                                {% with exam_sheets=student.progress_sheets.all %}
+                                    {% if exam_sheets %}
+                                        {% for sheet in exam_sheets %}
+                                            {% if sheet.exam_type == selected_exam %}
+                                                <div class="score-badge {% if sheet.marks >= 80 %}good{% elif sheet.marks >= 60 %}average{% else %}poor{% endif %}">
+                                                    {% if sheet.marks >= 80 %}
+                                                        <i class="fas fa-star"></i>
+                                                    {% elif sheet.marks >= 60 %}
+                                                        <i class="fas fa-check-circle"></i>
+                                                    {% else %}
+                                                        <i class="fas fa-exclamation-circle"></i>
+                                                    {% endif %}
+                                                    {{ sheet.marks }}
+                                                    <small>({{ sheet.get_subject_display }})</small>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <span style="color: #94a3b8; font-style: italic;">No scores</span>
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            {% endif %}
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="{% url 'student_detail' student.id %}" class="action-btn view" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'edit_student' student.id %}" class="action-btn edit" title="Edit Student">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'delete_student' student.id %}" class="action-btn delete" title="Delete Student">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fas fa-user-graduate"></i>
+                <h3>No Students Found</h3>
+                <p>
+                    {% if selected_exam or search_query %}
+                    No students match your current search criteria. Try adjusting your filters or search terms.
+                    {% else %}
+                    There are no students in the system yet. Add your first student to get started.
+                    {% endif %}
+                </p>
+                <a href="{% url 'add_student' %}" class="add-student-btn">
+                    <i class="fas fa-user-plus"></i> Add First Student
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if students.has_other_pages %}
+        <div class="pagination-section">
+            <div class="pagination-info">
+                Showing <strong>{{ students.start_index }}</strong> to <strong>{{ students.end_index }}</strong> of <strong>{{ students.paginator.count }}</strong> students
+            </div>
+            
+            <div class="pagination">
+                {% if students.has_previous %}
+                    <a href="?page=1{% if selected_exam %}&exam_type={{ selected_exam }}{% endif %}{% if selected_class %}&class={{ selected_class }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="pagination-link" title="First Page">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                    <a href="?page={{ students.previous_page_number }}{% if selected_exam %}&exam_type={{ selected_exam }}{% endif %}{% if selected_class %}&class={{ selected_class }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="pagination-link" title="Previous Page">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                {% else %}
+                    <span class="pagination-link disabled">
+                        <i class="fas fa-angle-double-left"></i>
+                    </span>
+                    <span class="pagination-link disabled">
+                        <i class="fas fa-angle-left"></i>
+                    </span>
+                {% endif %}
+                
+                {% for num in students.paginator.page_range %}
+                    {% if students.number == num %}
+                        <span class="pagination-link active">{{ num }}</span>
+                    {% elif num > students.number|add:'-3' and num < students.number|add:'3' %}
+                        <a href="?page={{ num }}{% if selected_exam %}&exam_type={{ selected_exam }}{% endif %}{% if selected_class %}&class={{ selected_class }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="pagination-link">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if students.has_next %}
+                    <a href="?page={{ students.next_page_number }}{% if selected_exam %}&exam_type={{ selected_exam }}{% endif %}{% if selected_class %}&class={{ selected_class }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="pagination-link" title="Next Page">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                    <a href="?page={{ students.paginator.num_pages }}{% if selected_exam %}&exam_type={{ selected_exam }}{% endif %}{% if selected_class %}&class={{ selected_class }}{% endif %}{% if search_query %}&search={{ search_query }}{% endif %}" class="pagination-link" title="Last Page">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                {% else %}
+                    <span class="pagination-link disabled">
+                        <i class="fas fa-angle-right"></i>
+                    </span>
+                    <span class="pagination-link disabled">
+                        <i class="fas fa-angle-double-right"></i>
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    // Add interactive animations and effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add animation to table rows
+        const tableRows = document.querySelectorAll('.students-table tbody tr');
+        tableRows.forEach((row, index) => {
+            row.style.animationDelay = `${index * 0.05}s`;
+            row.style.animation = 'fadeIn 0.6s ease-out forwards';
+            row.style.opacity = '0';
+        });
+        
+        // Add hover effect to student avatars
+        const studentAvatars = document.querySelectorAll('.student-avatar');
+        studentAvatars.forEach(avatar => {
+            const studentName = avatar.parentElement.querySelector('.student-name').textContent;
+            const firstLetter = studentName.charAt(0).toUpperCase();
+            avatar.textContent = firstLetter;
+            
+            // Generate gradient based on first letter
+            const hue = (firstLetter.charCodeAt(0) * 10) % 360;
+            avatar.style.background = `linear-gradient(135deg, hsl(${hue}, 70%, 60%), hsl(${(hue + 30) % 360}, 70%, 50%))`;
+        });
+        
+        // Add search form submission on enter key
+        const searchInput = document.querySelector('.search-input');
+        const searchForm = document.querySelector('.search-box form');
+        
+        if (searchInput && searchForm) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchForm.submit();
+                }
+            });
+        }
+        
+        // Add loading animation to filter select
+        const filterSelect = document.querySelector('.filter-select');
+        if (filterSelect) {
+            filterSelect.addEventListener('change', function() {
+                const wrapper = this.closest('form');
+                const loadingOverlay = document.createElement('div');
+                loadingOverlay.style.position = 'absolute';
+                loadingOverlay.style.top = '0';
+                loadingOverlay.style.left = '0';
+                loadingOverlay.style.width = '100%';
+                loadingOverlay.style.height = '100%';
+                loadingOverlay.style.background = 'rgba(255, 255, 255, 0.8)';
+                loadingOverlay.style.borderRadius = '14px';
+                loadingOverlay.style.display = 'flex';
+                loadingOverlay.style.alignItems = 'center';
+                loadingOverlay.style.justifyContent = 'center';
+                loadingOverlay.style.zIndex = '10';
+                loadingOverlay.innerHTML = '<i class="fas fa-spinner fa-spin" style="color: var(--primary-color); font-size: 24px;"></i>';
+                
+                wrapper.style.position = 'relative';
+                wrapper.appendChild(loadingOverlay);
+                
+                setTimeout(() => {
+                    wrapper.submit();
+                }, 300);
+            });
+        }
+        
+        // Add animation to count badge
+        const countBadge = document.querySelector('.count-badge');
+        if (countBadge) {
+            const count = parseInt(countBadge.textContent);
+            if (!isNaN(count) && count > 0) {
+                animateCount(countBadge, 0, count, 1500);
+            }
+        }
+        
+        // Add tooltips to action buttons
+        const actionButtons = document.querySelectorAll('.action-btn');
+        actionButtons.forEach(button => {
+            const title = button.getAttribute('title');
+            if (title) {
+                button.addEventListener('mouseenter', function(e) {
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'tooltip';
+                    tooltip.textContent = title;
+                    tooltip.style.position = 'absolute';
+                    tooltip.style.background = 'rgba(0, 0, 0, 0.8)';
+                    tooltip.style.color = 'white';
+                    tooltip.style.padding = '6px 12px';
+                    tooltip.style.borderRadius = '6px';
+                    tooltip.style.fontSize = '12px';
+                    tooltip.style.fontWeight = '500';
+                    tooltip.style.zIndex = '1000';
+                    tooltip.style.whiteSpace = 'nowrap';
+                    tooltip.style.pointerEvents = 'none';
+                    
+                    const rect = this.getBoundingClientRect();
+                    tooltip.style.top = (rect.top - 35) + 'px';
+                    tooltip.style.left = (rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+                    
+                    document.body.appendChild(tooltip);
+                    this.tooltip = tooltip;
+                    
+                    // Adjust position after render
+                    setTimeout(() => {
+                        tooltip.style.left = (rect.left + rect.width / 2 - tooltip.offsetWidth / 2) + 'px';
+                    }, 10);
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    if (this.tooltip) {
+                        this.tooltip.remove();
+                    }
+                });
+            }
+        });
+    });
+    
+    // Animate count badge
+    function animateCount(element, start, end, duration) {
+        if (start === end) return;
+        
+        const range = end - start;
+        const startTime = performance.now();
+        const step = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const value = Math.floor(start + (range * progress));
+            
+            element.textContent = value;
+            
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            }
+        };
+        
+        requestAnimationFrame(step);
+    }
+    
+    // Add floating particles effect
+    function createFloatingParticles() {
+        const particlesContainer = document.createElement('div');
+        particlesContainer.style.position = 'fixed';
+        particlesContainer.style.top = '0';
+        particlesContainer.style.left = '0';
+        particlesContainer.style.width = '100%';
+        particlesContainer.style.height = '100%';
+        particlesContainer.style.pointerEvents = 'none';
+        particlesContainer.style.zIndex = '0';
+        particlesContainer.style.overflow = 'hidden';
+        document.body.appendChild(particlesContainer);
+        
+        const colors = ['#4361ee', '#7209b7', '#2ec4b6', '#06d6a0'];
+        
+        for (let i = 0; i < 10; i++) {
+            const particle = document.createElement('div');
+            particle.style.position = 'absolute';
+            particle.style.width = Math.random() * 15 + 5 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.borderRadius = '50%';
+            particle.style.opacity = Math.random() * 0.05 + 0.03;
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            
+            // Animation
+            const duration = Math.random() * 20 + 10;
+            particle.style.animation = `float ${duration}s ease-in-out infinite`;
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            
+            particlesContainer.appendChild(particle);
+        }
+    }
+    
+    // Initialize floating particles
+    setTimeout(createFloatingParticles, 1000);
+</script>
+
+</body>
+</html>
